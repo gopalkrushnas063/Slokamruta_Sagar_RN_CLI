@@ -29,17 +29,27 @@ const initializeI18n = () => {
       interpolation: {
         escapeValue: false,
       },
+      react: {
+        useSuspense: false,
+      },
+      // Add debug mode for development
+      debug: __DEV__,
     });
 
-  // Sync language changes between i18n and Redux
+  // Subscribe to Redux store changes to sync language
+  let currentLanguage = lng;
   store.subscribe(() => {
     const newState = store.getState();
-    if (newState.language.currentLanguage !== i18n.language) {
-      i18n.changeLanguage(newState.language.currentLanguage);
+    const newLanguage = newState.language.currentLanguage;
+    
+    if (newLanguage !== currentLanguage) {
+      currentLanguage = newLanguage;
+      i18n.changeLanguage(newLanguage);
     }
   });
 };
 
+// Initialize i18n
 initializeI18n();
 
 export default i18n;
